@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import config from '../ormconfig';
 
 import { TodoModule } from './todo/todo.module';
+import { TaskModule } from './task/task.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { TodoModule } from './todo/todo.module';
     }),
     TypeOrmModule.forRoot(config),
     TodoModule,
+    TaskModule,
   ],
   controllers: [],
   providers: [],

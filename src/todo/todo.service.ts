@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 
-import { formatSearchInput, SearchOptions } from '../lib/formatWhereManyInput';
+import { formatSearchInput } from '../lib/formatWhereManyInput';
 
 import { Todo } from './entities/todo.entity';
 import { TodoCreateArgs } from './dto/args/todo-create.arg';
@@ -16,12 +16,17 @@ export class TodoService {
     private readonly todoRepository: Repository<Todo>,
   ) {}
 
-  findAllTodos(args: TodoFindManyArgs) {
+  async findAllTodos(args: TodoFindManyArgs) {
     const searchOptions = {} as { where: any };
     if ('where' in args) {
       searchOptions.where = formatSearchInput(args.where as any);
     }
-    return this.todoRepository.find(searchOptions);
+    const todos = await this.todoRepository.find({
+      where: searchOptions.where,
+      relations: ['tasks'],
+    });
+
+    return todos;
   }
 
   createTodo(args: TodoCreateArgs) {

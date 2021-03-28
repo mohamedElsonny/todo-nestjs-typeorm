@@ -30,8 +30,8 @@ export type SearchOptions = Partial<
     _not?: Partial<Record<string, SimpleSearchOptions>>[];
   } & Record<string, SimpleSearchOptions>
 >;
+
 export function formatSearchInput(input: SearchOptions, not = false) {
-  console.dir({ input }, { depth: null });
   const result = Object.entries(input).reduce((acc, [key, value]) => {
     switch (key) {
       case '_and': {
@@ -60,11 +60,10 @@ export function formatSearchInput(input: SearchOptions, not = false) {
       }
     }
   }, {});
-  console.log({ result });
   return result;
 }
 
-function getOperatorFromOptions(value, fun = (val) => val) {
+function getOperatorFromOptions(value, fun = (val: any) => val) {
   if ('_eq' in value) return fun(Equal(value._eq));
   if ('_neq' in value) return fun(Not(Equal(value._neq)));
   if ('_in' in value) return fun(In(value._in));
@@ -75,4 +74,5 @@ function getOperatorFromOptions(value, fun = (val) => val) {
   if ('_lte' in value) return fun(LessThanOrEqual(value._lte));
   if ('_gt' in value) return fun(MoreThan(value._gt));
   if ('_gte' in value) return fun(MoreThanOrEqual(value._gte));
+  return formatSearchInput(value);
 }

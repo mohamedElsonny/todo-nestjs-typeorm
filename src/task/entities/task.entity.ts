@@ -1,35 +1,36 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType, Int } from '@nestjs/graphql';
 
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { OneToMany } from 'typeorm';
 
-import { Task } from '../../task/entities/task.entity';
+import { Todo } from 'todo/entities/todo.entity';
 
 @Entity()
 @ObjectType()
-export class Todo {
+export class Task {
   @PrimaryGeneratedColumn()
   @Field(() => Int)
   id: number;
 
-  @Column()
-  @Field()
-  content: string;
-
   @Column('text')
   @Field()
-  description: string;
+  body: string;
 
-  @OneToMany(() => Task, (task) => task.todo)
-  @Field(() => [Task], { defaultValue: [] })
-  tasks: Task[];
+  @Column()
+  @Field(() => Int)
+  todoId: number;
+
+  @ManyToOne(() => Todo, (todo) => todo.tasks)
+  @Field(() => Todo)
+  todo: Todo;
 
   @CreateDateColumn({ type: 'timestamp' })
   @Field()
